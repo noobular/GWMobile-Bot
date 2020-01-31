@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Shopping List</title>
+        
+        <!-- Compiled and minified CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+        <!-- Compiled and minified JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>        
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        
+        <style>
+            nav{
+                -webkit-app-region:drag;
+            }
+            a{
+                -webkit-app-region: no-drag;
+            }
+            a.brand-logo{
+                -webkit-app-region: drag;
+            }
+            .darkThemeBorder{
+                border-color: #212121 !important;
+            }
+
+            a{
+                border-radius: 0px !important;
+            }
+
+            .affixToBottom{
+                position: absolute; 
+                bottom: 0; 
+                width: 100%;
+            }
+
+        </style>
+    </head>
+    <body class="grey darken-4">
+
+            <nav>
+                <div class="nav-wrapper  grey darken-4 ">
+                    <a href="#!" class="brand-logo" style="margin-left:15px;"><i class="material-icons">cloud</i>Gangwars Mobile Auto-Player</a>
+                    <ul class="right hide-on-med-and-down">
+                        <!--
+                    <li><a href="sass.html"><i class="material-icons">more_vert</i></a></li>
+                    <li><a href="badges.html"><i class="material-icons">settings</i></a></li>
+                        -->
+                    <li><a onclick="minimize()"><i class="material-icons">desktop_windows</i></a></li>
+                    <li><a onclick="quit()"><i class="material-icons">close</i></a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="container" style="margin-top:50px;">
+                    <div id="alertbox" class="col s12"></div>
+                    <div class="input-field col s6">
+                        <input id="username" type="text" class="validate" autofocus>
+                        <label for="username">Username</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input id="password" type="password" class="validate">
+                        <label for="password">Password</label>
+                    </div>
+                    <a class="waves-effect waves-light btn grey darken-4" onclick="Login()">Login</a>
+                    </div>
+            </div>
+
+</body>
+
+    <script>
+        M.AutoInit();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.fixed-action-btn');
+            var instances = M.FloatingActionButton.init(elems, {
+            direction: 'up',
+            hoverEnabled: false
+            });
+        });
+                
+        const electron = require('electron');
+        const {ipcRenderer} = electron;
+        const ul = document.querySelector('ul');
+
+        ipcRenderer.on("userlogin:failed",function(){
+            let alert = document.createElement("h1")
+            alert.innerHTML = "Failed to Login..."
+            alert.style = "color:red"
+            document.getElementById("alertbox").appendChild(alert);
+        });
+
+        function OpenAddWindow(){
+            ipcRenderer.send('windowOpen:additem');
+        }
+
+        function quit(){
+            ipcRenderer.send('quit');
+        }
+        
+        
+        function minimize(){
+            ipcRenderer.send('minimize');
+        }
+
+
+        function Login(){
+            const user = document.getElementById("username").value
+            const pass = document.getElementById("password").value
+            const loginInformation = [user,pass];
+            ipcRenderer.send('userlogin',loginInformation);
+        }
+
+        
+        function testCall(){
+            ipcRenderer.send('testCall');
+        }
+    </script>
+</html>
